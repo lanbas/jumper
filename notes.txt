@@ -1,0 +1,2 @@
+Should an Object2D necessarily be a Drawable? I feel like an Object2D just provides object characteristics and 
+Drawable provides drawable characteristics and if somethign has both it can derive from both 

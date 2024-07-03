@@ -17,6 +17,11 @@ Vector2D Object2D::velocity()
     return m_velocity;
 }
 
+Vector2D Object2D::acceleration()
+{
+    return m_acceleration;
+}
+
 uint32_t Object2D::height()
 {
     return m_height;
@@ -46,6 +51,17 @@ uint32_t Object2D::bottom()
 {
     return m_position.y + (m_height / 2);
 }
+
+void Object2D::updateMotion(float dt)
+{
+    // Kinematic updates to position and velocity TODO: Determine which should go first? Might not reallly matter
+    m_velocity += m_acceleration * dt;
+    m_position = m_position + m_velocity * dt + (m_acceleration / 2.0f) * pow(dt, 2);
+    // TODO: Confirm that scalar * vector are all implemented (NEED DIVISION)
+}
+
+
+// TODO: Collision
 
 ///////////////////////////////
 // Score : public Drawable

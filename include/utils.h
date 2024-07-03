@@ -5,7 +5,7 @@
 
 // struct Collision
 
-class Drawable
+class IDrawable
 {
 public:
     virtual void draw(SDL_Renderer* renderer) = 0;
@@ -43,12 +43,13 @@ public:
 	float x, y;
 };
 
-class Object2D : public Drawable // TODO: Better name -- sprite? asset? Some game term that is like an interactible object
+class Object2D
 {
 public:
     Object2D(const Vector2D& initialPosition, const Vector2D& initialVelocity, const uint32_t height, const uint32_t width);
     Vector2D position();
     Vector2D velocity();
+    Vector2D acceleration();
     uint32_t height();
     uint32_t width();
     uint32_t left();
@@ -56,7 +57,8 @@ public:
     uint32_t top();
     uint32_t bottom();
 
-    virtual void draw(SDL_Renderer* renderer) = 0;
+    // Updates position and velocity 
+    void updateMotion(float dt);
 
     virtual void onCollision() = 0;
     bool isColliding(std::vector<Object2D> objectList);
@@ -64,11 +66,12 @@ public:
 private:
     Vector2D m_position;
     Vector2D m_velocity;
+    Vector2D m_acceleration;
     uint32_t m_height;
     uint32_t m_width;
 };
 
-struct Score : public Drawable
+struct Score : public IDrawable
 {
 public:
     Score(int64_t initialScore = 0);
