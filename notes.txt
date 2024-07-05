@@ -1,2 +1,14 @@
 Should an Object2D necessarily be a Drawable? I feel like an Object2D just provides object characteristics and 
 Drawable provides drawable characteristics and if somethign has both it can derive from both 
+
+Might not be bad to even separate SDL stuff into its own class -- if an object is going to be rendered
+as an SDL rect, it should inherit and access rect that way so that e.g. the Jumper class is completely separated
+from anything SDL related. Could be more easily reusable that way
+    But I guess it's just the Draw() function that changes and that's abstract in the first place in order to 
+    allow for each class to implement it its own way anways
+
+Figure out how people normall implement simple motion/jumps and things like that. It seems like there would be an 
+elegant way to program a little physics and let that take care of motion with some initiation from user actions... 
+Right now I am having to like only let physics affect things when the object is in the air by overriding the generic
+object updateMotion with a jumper update motion... and I will have to do the same with obstacles... 
+    I guess this allows everything to be affected a little differently... 

@@ -1,7 +1,7 @@
-OBJS = $(wildcard src/*.cpp) main.cpp
+OBJS = $(wildcard src/*.cpp)
 CC = g++
 COMPILER_FLAGS = -g -w -I ./include
-LINKER_FLAGS = -lSDL2 
+LINKER_FLAGS = -lSDL2 -lSDL2_ttf -lSDL2_mixer
 OBJ_NAME = jumper
 
 

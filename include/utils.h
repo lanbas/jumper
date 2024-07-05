@@ -40,13 +40,19 @@ public:
 		return Vector2D(x * rhs, y * rhs);
 	}
 
+    Vector2D operator/(float rhs)
+	{
+        assert(rhs != 0);
+		return Vector2D(x / rhs, y / rhs);
+	}
+
 	float x, y;
 };
 
 class Object2D
 {
 public:
-    Object2D(const Vector2D& initialPosition, const Vector2D& initialVelocity, const uint32_t height, const uint32_t width);
+    Object2D(const Vector2D& initialPosition, const Vector2D& initialVelocity, const Vector2D& initialAcceleration, const uint32_t height, const uint32_t width);
     Vector2D position();
     Vector2D velocity();
     Vector2D acceleration();
@@ -58,12 +64,12 @@ public:
     uint32_t bottom();
 
     // Updates position and velocity 
-    void updateMotion(float dt);
+    virtual void updateMotion(float dt);
 
-    virtual void onCollision() = 0;
+    // virtual void onCollision() = 0;
     bool isColliding(std::vector<Object2D> objectList);
 
-private:
+protected:
     Vector2D m_position;
     Vector2D m_velocity;
     Vector2D m_acceleration;

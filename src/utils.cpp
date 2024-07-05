@@ -3,8 +3,8 @@
 ///////////////////////////////
 // Object2D : public Drawable
 ///////////////////////////////
-Object2D::Object2D(const Vector2D& initialPosition, const Vector2D& initialVelocity, const uint32_t height, const uint32_t width)
-    :m_position(initialPosition), m_velocity(initialVelocity), m_height(height), m_width(width)
+Object2D::Object2D(const Vector2D& initialPosition, const Vector2D& initialVelocity, const Vector2D& initialAcceleration, const uint32_t height, const uint32_t width)
+    :m_position(initialPosition), m_velocity(initialVelocity), m_acceleration(initialAcceleration), m_height(height), m_width(width)
 {}
 
 Vector2D Object2D::position()
@@ -54,14 +54,21 @@ uint32_t Object2D::bottom()
 
 void Object2D::updateMotion(float dt)
 {
-    // Kinematic updates to position and velocity TODO: Determine which should go first? Might not reallly matter
+    // Kinematic updates to position and velocity
     m_velocity += m_acceleration * dt;
     m_position = m_position + m_velocity * dt + (m_acceleration / 2.0f) * pow(dt, 2);
-    // TODO: Confirm that scalar * vector are all implemented (NEED DIVISION)
 }
 
+bool Object2D::isColliding(std::vector<Object2D> objectList)
+{
+    for (Object2D& obj : objectList)
+    {
+        if (areColliding(*this, obj))
+            return true;
+    }
 
-// TODO: Collision
+    return false;
+}
 
 ///////////////////////////////
 // Score : public Drawable
