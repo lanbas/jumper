@@ -46,6 +46,10 @@ class Obstacle : public Object2D, public IDrawable
 {
 public:
     static Obstacle spawn();
+    
+    virtual void updateMotion(float dt) override;
+    void draw(SDL_Renderer* renderer) override;
+
 private:
     SDL_Rect m_rect{};
 };
@@ -59,3 +63,8 @@ class JumpObstacle : public Obstacle
 {
 
 };
+
+static spawn_obstacle(Vector2D velocity)
+{
+
+}
