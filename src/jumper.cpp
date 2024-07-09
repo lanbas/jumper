@@ -64,9 +64,28 @@ void Jumper::updateMotion(float dt)
     }
 
     // Check for jump complete
-    if (m_state == JumperState::JUMPING && m_position.y >= kFloorHeight)
+    if (m_state == JumperState::JUMPING && m_position.y >= kJumperHomeY)
     {
         // Sets back to floor height, velocity 0, and state back to running
         reset();
     }
+}
+
+Obstacle::Obstacle(const float positionY, const Vector2D& velocity, const uint32_t height, const uint32_t width)
+    :Object2D({kWindowWidth, positionY}, velocity, {0.0f, 0.0f}, height, width)
+{
+    m_rect.y = positionY;
+    m_rect.h = height;
+    m_rect.w = width;
+}
+    
+void Obstacle::updateMotion(float dt)
+{
+    m_position = m_position + m_velocity * dt + (m_acceleration / 2.0f) * pow(dt, 2); // Update position based on constant velocity;
+}
+
+void Obstacle::draw(SDL_Renderer* renderer)
+{
+    m_rect.x = m_position.x;
+    SDL_RenderFillRect(renderer, &m_rect);
 }

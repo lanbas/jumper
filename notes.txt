@@ -12,3 +12,18 @@ elegant way to program a little physics and let that take care of motion with so
 Right now I am having to like only let physics affect things when the object is in the air by overriding the generic
 object updateMotion with a jumper update motion... and I will have to do the same with obstacles... 
     I guess this allows everything to be affected a little differently... 
+
+It would probably be useful to create a GameManager or something like that to let you switch between pre-, mid-, and post-game screens
+and allow for more structured configuration, and also manage game state a little bit better
+    - GameManager exists generally and then individual games inherit from it
+    - Could also have a general game driver type beat where the game is written and exposes a certain interface like start(), run(), menu(),
+    exit()
+        - May be difficult to make this both flexible and useful? Will take some thinking, and may not prove useful enough to go through with
+
+
+Pain points 07/07/2024
+    - Can jump over every obstacle so ducking does not come into play
+        - Need duck obstacles to be larger height to disallow jumping over and still requiring duck
+    - Static spawn time (combined with above) means you can just pretty regularly jump and things will be fine
+        - Gradually lower spawn interval over time + decent variation in every spawn
+    - 
