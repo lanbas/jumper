@@ -9,7 +9,8 @@ static constexpr const uint32_t kWindowWidth = 1280;
 
 // Jumper size and position
 static constexpr const uint32_t kJumperHeight = 125;
-static constexpr const uint32_t kDuckHeight = kJumperHeight / 2; 
+static constexpr const uint32_t kDuckHeightDivisor = 2;
+static constexpr const uint32_t kDuckHeight = kJumperHeight / kDuckHeightDivisor; 
 static constexpr const uint32_t kJumperWidth = 65; 
 static constexpr const float kJumperHomeX = 100.0f;
 static constexpr const float kJumperHomeY = 550.0f;
@@ -20,20 +21,21 @@ static constexpr const float kGravity = 0.005f; // Constant acceleration applied
 static constexpr const float kJumpVelocityY = -1.75f; // Velocity y-component provided by jump
 
 // Obstacle information
-static constexpr const uint32_t kSteadyStateTimeElapsed_s = 120;
+static constexpr const uint32_t kSteadyStateTimeElapsed_s = 90;
 static constexpr const uint32_t kDuckObstacleHeight = 30;
 static constexpr const float kDuckObstacleProportion = 0.3;
 static constexpr const float kInitialObstacleVelocity = -0.8;
-static constexpr const float kObstacleVelocityIncrement = -0.01; // 120 seconds to reach max speed of -2
+static constexpr const float kObstacleVelocityIncrement = -0.0125; // 120 seconds to reach max speed of -2
 static constexpr const float kInitialObstacleWidthFactorMin = 2.0;
 static constexpr const float kInitialObstacleWidthFactorMax = 4.0;
-static constexpr const float kWidthFactorIncrement = 0.008; // ~120 seconds to reach max width distribution of [1.5, 2.0]
+static constexpr const float kWidthFactorIncrement = 0.01; // ~120 seconds to reach max width distribution of [1.5, 2.0]
 static constexpr const uint32_t kObstacleUnitWidth_px = 65;
-static constexpr const uint32_t kInitialObstacleSpawnInterval_ms = 1500;
-static constexpr const int32_t kObstacleSpawnIntervalIncrement_ms = -4;
-static constexpr const int32_t kObstacleSpawnIntervalDeviation_ms = 400;
+static constexpr const uint32_t kInitialObstacleSpawnInterval_ms = 1200;
+static constexpr const int32_t kObstacleSpawnIntervalIncrement_ms = -6;
+static constexpr const int32_t kObstacleSpawnIntervalDeviation_ms = 300;
 
-
+// Score info
+static constexpr const uint32_t kPointsPerSecond = 100;
 
 enum class JumperState
 {

@@ -34,22 +34,22 @@ uint32_t Object2D::width()
 
 uint32_t Object2D::left()
 {
-    return m_position.x - (m_width / 2);
+    return m_position.x;
 }
 
 uint32_t Object2D::right()
 {
-    return m_position.x + (m_width / 2);
+    return m_position.x + m_width;
 }
 
 uint32_t Object2D::top()
 {
-    return m_position.y - (m_height / 2);
+    return m_position.y;
 }
 
 uint32_t Object2D::bottom()
 {
-    return m_position.y + (m_height / 2);
+    return m_position.y + m_height;
 }
 
 void Object2D::updateMotion(float dt)
@@ -73,9 +73,12 @@ bool Object2D::isColliding(std::vector<Object2D> objectList)
 ///////////////////////////////
 // Score : public Drawable
 ///////////////////////////////
-Score::Score(int64_t initialScore)
-    :m_score(initialScore)
-{}
+Score::Score(TTF_Font* font, Vector2D position, int64_t initialScore)
+    :m_score(initialScore), m_font(font)
+{
+    m_rect.x = position.x;
+    m_rect.y = position.y;
+}
 
 void Score::setScore(int64_t value)
 {
@@ -99,5 +102,20 @@ void Score::subtractScore(int64_t value)
 
 void Score::draw(SDL_Renderer* renderer)
 {
-    return;
+    if (m_initialized)
+    {
+        SDL_FreeSurface(m_surface);
+        SDL_DestroyTexture(m_texture);
+        m_initialized = true;
+    }
+
+    m_surface = TTF_RenderText_Solid(m_font, std::to_string(m_score).c_str(), {0xFF, 0xFF, 0xFF, 0xFF});
+    m_texture = SDL_CreateTextureFromSurface(renderer, m_surface);
+
+    int width, height;
+    SDL_QueryTexture(m_texture, nullptr, nullptr, &width, &height);
+    m_rect.w = width;
+    m_rect.h = height;
+
+    SDL_RenderCopy(renderer, m_texture, nullptr, &m_rect);
 }

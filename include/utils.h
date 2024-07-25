@@ -2,6 +2,7 @@
 
 #include "base.h"
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_ttf.h"
 
 // struct Collision
 
@@ -80,17 +81,24 @@ protected:
 struct Score : public IDrawable
 {
 public:
-    Score(int64_t initialScore = 0);
+    Score(TTF_Font* font, Vector2D position, int64_t initialScore = 0);
     void setScore(int64_t value);
     int64_t getScore();
     void addScore(int64_t value);
     void subtractScore(int64_t value);
+
+    // TODO operator overloads
 
     // fetchAdd type beat? 
     virtual void draw(SDL_Renderer* renderer) override;
     
 private:
     int64_t m_score;
+    TTF_Font* m_font;
+	SDL_Surface* m_surface{};
+	SDL_Texture* m_texture{};
+	SDL_Rect m_rect{};
+    bool m_initialized{ false };
 };
 
 static bool areColliding(Object2D& obj1, Object2D& obj2)

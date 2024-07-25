@@ -11,6 +11,22 @@ bool running = false;
 std::mutex obstacleLock;
 std::condition_variable cv;
 
+void drawGameOver(TTF_Font* font, SDL_Renderer* renderer)
+{
+	SDL_Rect rect{};
+	SDL_Surface* surface = TTF_RenderText_Solid(font, "GAME OVER", {0xFF, 0xFF, 0xFF, 0xFF});
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+	int width, height;
+	SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
+	rect.x = kWindowWidth / 2; 
+	rect.y = kWindowHeight / 2; 
+	rect.w = width;
+	rect.h = height;
+
+	SDL_RenderCopy(renderer, texture, nullptr, &rect);
+}
+
 void printObstacle(Obstacle& o)
 {
 	std::cout << "============\n";
@@ -62,15 +78,13 @@ void spawnObstacles(std::deque<Obstacle>& obstacleList, std::chrono::_V2::system
 		float obstacleHeight;
 		if (randomFloatInRange(0.0f, 1.0f) < kDuckObstacleProportion) // Duck obstacle
 		{
-			// TODO: Change how duck obstacle height is determined
-			obstaclePositionY = randomFloatInRange(kJumperHomeY - kDuckObstacleHeight, kFloorHeight - kDuckHeight - kDuckObstacleHeight); 
-			obstacleHeight = kDuckObstacleHeight;
+			obstaclePositionY = 0;
+			obstacleHeight = randomFloatInRange(kJumperHomeY, kJumperHomeY + (kJumperHeight * (1 - (1.0 / kDuckHeightDivisor))) - 2);
 		}
 		else // Jump obstacle
 		{
-			// TODO: Change how jump obstacle height is determined
-			// Obstacles can peak <duck obstacle height> px above standing jumper, and be as low as <duck obstacle height> px above ducking jumper
-			obstaclePositionY = randomFloatInRange(kJumperHomeY - kDuckObstacleHeight, kFloorHeight - kDuckHeight - kDuckObstacleHeight);
+			// Obstacles can be up to 1.5 * the height of the jumper
+			obstaclePositionY = randomFloatInRange(kJumperHomeY - (kJumperHeight / 2), kJumperHomeY);
 			obstacleHeight = kFloorHeight - obstaclePositionY;
 		}
 
@@ -95,7 +109,8 @@ int main(int argc, char** argv)
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0); 
 
     // Initialize the font
-	TTF_Font* scoreFont = TTF_OpenFont("fonts/DejaVuSansMono.ttf", 64);
+	TTF_Font* gameFont = TTF_OpenFont("fonts/DejaVuSansMono.ttf", 32);
+	Score score(gameFont, {20, 20});
 
 	// Initialize sound
 	// Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
@@ -105,6 +120,8 @@ int main(int argc, char** argv)
     // Create Jumper (starts at configured defaults)
     Jumper jumper;
 	auto globalStartTime = std::chrono::high_resolution_clock::now();
+	auto now = std::chrono::high_resolution_clock::now();
+	auto totalTimeElapsed_ms = std::chrono::duration<float, std::chrono::milliseconds::period>(now - globalStartTime).count();
 
     // Game logic
     {
@@ -168,16 +185,6 @@ int main(int argc, char** argv)
 							break;
                     }
                 }
-				// 		case SDLK_UP:
-				// 			buttonsDown[ControlButtons::PaddleTwoUp] = false;
-				// 			break;
-				// 		case SDLK_DOWN:
-				// 			buttonsDown[ControlButtons::PaddleTwoDown] = false;
-				// 			break;
-				// 		default:
-				// 			break;
-				// 	}
-				// }
 			}
 
             // Clear the window to black
@@ -186,6 +193,9 @@ int main(int argc, char** argv)
 
             // Set the draw color to be white
             SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+			// Update objects and score
+			score.setScore(totalTimeElapsed_ms / 100);
 
 			jumper.updateMotion(dt);
 
@@ -207,6 +217,13 @@ int main(int argc, char** argv)
 			}
 
 			jumper.draw(renderer);
+			score.draw(renderer);
+
+			// If jumper is colliding with object, game is over
+			if (jumper.isColliding({obstacleList.begin(), obstacleList.end()}))
+			{
+				running = false;
+			}
 
 			// Present the backbuffer
 			SDL_RenderPresent(renderer);
@@ -214,10 +231,15 @@ int main(int argc, char** argv)
             // Calculate frame time
 			auto stopTime = std::chrono::high_resolution_clock::now();
 			dt = std::chrono::duration<float, std::chrono::milliseconds::period>(stopTime - startTime).count();
+			totalTimeElapsed_ms += dt;
         }
 
 		cv.notify_one();
 		t.join();
+
+		drawGameOver(gameFont, renderer);
+		SDL_RenderPresent(renderer);
+		std::this_thread::sleep_for(10s);
 
     }
 
