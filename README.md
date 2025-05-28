@@ -1,5 +1,5 @@
 # jumper
-A jumpy game built with SDL2 and C++. 
+A jumper game built with SDL2 and C++. 
 
 ![Image showing still frame of shrinky game](img/demo.png)
 
@@ -12,6 +12,9 @@ git clone https://github.com/lanbas/jumper.git
 cd jumper
 make
 ```
+## Controls
+ * Jump - `SPACE`
+ * Duck - `S` or `DOWN`
 
 ## Play 
 ```bash
