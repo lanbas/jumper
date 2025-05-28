@@ -20,3 +20,5 @@ make
 ```bash
 ./jumper
 ```
+
+Obstacles spawn in intermittently. Jump or duck to avoid them as necessary. Obstacle width and jumper speed increase over time. 
